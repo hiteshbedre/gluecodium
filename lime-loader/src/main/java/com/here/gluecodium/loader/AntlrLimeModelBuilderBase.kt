@@ -172,6 +172,10 @@ internal abstract class AntlrLimeModelBuilderBase(
 
     override fun exitExternalDescriptorValue(ctx: LimeParser.ExternalDescriptorValueContext?) {}
 
+    override fun enterValidator(ctx: LimeParser.ValidatorContext?) {}
+
+    override fun exitValidator(ctx: LimeParser.ValidatorContext?) {}
+
     override fun visitTerminal(node: TerminalNode) {}
 
     override fun visitErrorNode(node: ErrorNode) {}

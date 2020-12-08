@@ -19,6 +19,8 @@
 
 package com.here.gluecodium.model.lime
 
+import java.security.cert.CertPathValidator
+
 class LimeClass(
     path: LimePath,
     visibility: LimeVisibility = LimeVisibility.PUBLIC,
@@ -35,7 +37,8 @@ class LimeClass(
     classes: List<LimeClass> = emptyList(),
     interfaces: List<LimeInterface> = emptyList(),
     lambdas: List<LimeLambda> = emptyList(),
-    parent: LimeTypeRef? = null
+    parent: LimeTypeRef? = null,
+    val validatorName: String? = null
 ) : LimeContainerWithInheritance(
     path = path,
     visibility = visibility,

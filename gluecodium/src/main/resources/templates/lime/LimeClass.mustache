@@ -21,5 +21,6 @@
 {{>lime/LimeDocumentation}}
 {{visibility}}class {{escapedName}} {{#parent}}: {{type.name}} {{/parent}}{
 {{prefixPartial "lime/LimeExternalDescriptor" "    "}}
+{{#if validatorName}}    validator {{validatorName}}(){{/if}}
 {{>lime/LimeContainerContents}}
 }

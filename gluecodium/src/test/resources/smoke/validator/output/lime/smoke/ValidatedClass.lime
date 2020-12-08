@@ -1,0 +1,9 @@
+package smoke
+class ValidatedClass {
+    validator checkMe()
+    constructor makeMe()
+    fun doStuff()
+    static fun doStaticStuff()
+    property something: String
+    static property somethingStatic: String
+}

@@ -40,7 +40,7 @@ importStatement
 
 container
     : docComment* annotation* visibility? ('class' | 'interface') NewLine* simpleId NewLine*
-      (':' NewLine* identifier NewLine*)? '{' NewLine* externalDescriptor?
+      (':' NewLine* identifier NewLine*)? '{' NewLine* externalDescriptor? validator?
       ((function | constructor | property | struct | enumeration | constant | typealias |
       exception | lambda | container) NewLine*)* '}' NewLine+
     ;
@@ -71,6 +71,10 @@ returnType
 
 throwsClause
     : 'throws' NewLine* docComment* typeRef NewLine*
+    ;
+
+validator
+    : 'validator'  NewLine* simpleId NewLine* '(' NewLine* ')' NewLine*
     ;
 
 property

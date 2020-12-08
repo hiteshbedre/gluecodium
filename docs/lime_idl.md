@@ -353,6 +353,20 @@ attributes (or omitted if the name is the name of the type in IDL declaration).
 type which is generated when a converter is specified has an additional `_internal` suffix to its
 name in Swift and Dart.
 
+#### Validator
+
+* Syntax: **validator** *ValidatorName* **()**
+* Example: `validator checkState()`
+* Can be placed in: class. If present, it must be:
+  * The first child element, if no external descriptor is present.
+  * The second child element, if an external descriptor is present.
+* Description: enables state validation and specifies the name for the validator function. For C++ a pure virtual const
+function with *ValidatorName* name is generated, that takes no parameters and returns an `optional<std::string>`. For
+Java/Swift/Dart a private function with *ValidatorName* name is generated, that takes no parameters and returns no
+value. This private function is called before each other non-static function (method or property accessor) call is
+executed. If the C++ function returns a non-empty optional, the Java/Swift/Dart function throws an unchecked exception
+with the returned string value as a message. If the returned optional value is empty, no exception is thrown.
+
 ### Type references
 
 A type reference is a mention of a type anywhere, as opposed to a type declaration. A type reference

@@ -79,6 +79,7 @@ Struct: 'struct' ;
 Throws: 'throws' ;
 TypeAlias: 'typealias' ;
 Types: 'types' ;
+Validator: 'validator' ;
 
 // Predefined types
 

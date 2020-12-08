@@ -137,7 +137,8 @@ internal class AntlrLimeModelBuilder(
                 exceptions = getPreviousResults(LimeException::class.java),
                 classes = getPreviousResults(LimeClass::class.java),
                 interfaces = getPreviousResults(LimeInterface::class.java),
-                lambdas = getPreviousResults(LimeLambda::class.java)
+                lambdas = getPreviousResults(LimeLambda::class.java),
+                validatorName = ctx.validator()?.simpleId()?.text
             )
         } else {
             LimeInterface(
