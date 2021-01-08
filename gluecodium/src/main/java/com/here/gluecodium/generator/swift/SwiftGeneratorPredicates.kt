@@ -22,7 +22,6 @@ package com.here.gluecodium.generator.swift
 import com.here.gluecodium.generator.common.CommonGeneratorPredicates
 import com.here.gluecodium.model.lime.LimeAttributeType
 import com.here.gluecodium.model.lime.LimeAttributeValueType
-import com.here.gluecodium.model.lime.LimeClass
 import com.here.gluecodium.model.lime.LimeContainerWithInheritance
 import com.here.gluecodium.model.lime.LimeElement
 import com.here.gluecodium.model.lime.LimeEnumeration
@@ -72,9 +71,6 @@ internal class SwiftGeneratorPredicates(limeReferenceMap: Map<String, LimeElemen
         "needsReducedConstructor" to { limeStruct: Any ->
             limeStruct is LimeStruct && limeStruct.internalFields.isNotEmpty() &&
                 limeStruct.internalFields.all { it.defaultValue != null }
-        },
-        "parentIsClass" to { limeClass: Any ->
-            limeClass is LimeClass && limeClass.parent?.type?.actualType is LimeClass
         },
         "skipDeclaration" to fun(limeType: Any): Boolean {
             if (limeType !is LimeType) return false

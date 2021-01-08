@@ -39,10 +39,10 @@ internal func getRef(_ ref: {{resolveName this "" "ref"}}?, owning: Bool = true)
 }
 {{/notInstanceOf}}
 
-{{#unlessPredicate "parentIsClass"}}
+{{#unless parentClass}}
 extension {{>implName}}: NativeBase {
     var c_handle: _baseRef { return c_instance }
-}{{/unlessPredicate}}{{!!
+}{{/unless}}{{!!
 
 }}{{#if attributes.equatable attributes.pointerEquatable logic="or"}}
 {{#instanceOf this "LimeInterface"}}
@@ -64,7 +64,7 @@ extension {{>implName}}: Hashable {
 }
 {{/if}}{{!!
 }}{{#unless attributes.equatable attributes.pointerEquatable logic="and"}}
-{{#instanceOf this "LimeClass"}}{{#unlessPredicate "parentIsClass"}}
+{{#instanceOf this "LimeClass"}}{{#unless parentClass}}
 
 extension {{>implName}}: Hashable {
     public static func == (lhs: {{>implName}}, rhs: {{>implName}}) -> Bool {
@@ -75,7 +75,7 @@ extension {{>implName}}: Hashable {
         hasher.combine(c_handle)
     }
 }
-{{/unlessPredicate}}{{/instanceOf}}
+{{/unless}}{{/instanceOf}}
 {{/unless}}
 
 internal func {{resolveName this "mangled"}}copyFromCType(_ handle: _baseRef) -> {{resolveName this "" "ref"}} {

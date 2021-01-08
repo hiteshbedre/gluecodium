@@ -21,17 +21,15 @@
 {{#constants}}
 {{>swift/SwiftConstant}}
 {{/constants}}
-{{#if parent}}{{#instanceOf parent.type.actualType "LimeInterface"}}
-{{#inheritedProperties}}{{#unless attributes.swift.skip}}
+{{#inheritedInterfaceProperties}}{{#unless attributes.swift.skip}}
 {{>swift/SwiftProperty}}
-{{/unless}}{{/inheritedProperties}}
-{{/instanceOf}}{{/if}}
+{{/unless}}{{/inheritedInterfaceProperties}}
 {{#properties}}{{#unless attributes.swift.skip}}
 {{>swift/SwiftProperty}}
 {{/unless}}{{/properties}}{{!!
 
 }}
-{{#unlessPredicate "parentIsClass"}}let c_instance : _baseRef
+{{#unless parentClass}}let c_instance : _baseRef
 
 init(c{{resolveName}}: _baseRef) {
     guard c{{resolveName}} != 0 else {
@@ -43,11 +41,11 @@ init(c{{resolveName}}: _baseRef) {
 deinit {
     {{resolveName "CBridge"}}_remove_swift_object_from_wrapper_cache(c_instance)
     {{resolveName "CBridge"}}_release_handle(c_instance)
-}{{/unlessPredicate}}{{!!
+}{{/unless}}{{!!
 
-}}{{#ifPredicate "parentIsClass"}}init(c{{resolveName}}: _baseRef) {
-    super.init(c{{resolveName parent.type.actualType}}: c{{resolveName}})
-}{{/ifPredicate}}
+}}{{#if parentClass}}init(c{{resolveName}}: _baseRef) {
+    super.init(c{{resolveName parentClass}}: c{{resolveName}})
+}{{/if}}
 
 {{#unless isInterface}}{{#classes}}
 {{>swift/SwiftClassDefinition}}
@@ -61,11 +59,9 @@ deinit {
 {{>swift/SwiftStructDefinition}}
 {{/structs}}{{/unless}}{{!!
 
-}}{{#if parent}}{{#instanceOf parent.type.actualType "LimeInterface"}}
-{{#inheritedFunctions}}{{#unless attributes.swift.skip}}
+}}{{#inheritedInterfaceFunctions}}{{#unless attributes.swift.skip}}
 {{>swift/SwiftFunctionSignature}} {{prefixPartial "swift/SwiftFunctionBody" "" skipFirstLine=true}}
-{{/unless}}{{/inheritedFunctions}}
-{{/instanceOf}}{{/if}}{{!!
+{{/unless}}{{/inheritedInterfaceFunctions}}{{!!
 
 }}{{#functions}}{{#unless attributes.swift.skip}}
 {{>swift/SwiftFunctionSignature}} {{prefixPartial "swift/SwiftFunctionBody" "" skipFirstLine=true}}

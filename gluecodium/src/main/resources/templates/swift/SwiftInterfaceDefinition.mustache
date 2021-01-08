@@ -23,7 +23,7 @@
 @objc
 {{/if}}{{!!
 }}{{resolveName visibility}} protocol {{resolveName}} : {{!!
-}}{{#if parent}}{{resolveName parent}}{{/if}}{{#unless parent}}AnyObject{{/unless}} {
+}}{{#parents}}{{resolveName this}}{{#if iter.hasNext}}, {{/if}}{{/parents}}{{#unless parents}}AnyObject{{/unless}} {
 {{#set isInterface=true interface=this}}{{#each typeAliases exceptions}}
 {{prefixPartial "swift/SwiftTypeAlias" "    "}}
 {{/each}}

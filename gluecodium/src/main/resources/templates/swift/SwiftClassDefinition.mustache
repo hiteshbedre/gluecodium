@@ -23,8 +23,10 @@
 @objcMembers
 {{/if}}{{!!
 }}{{resolveName visibility}} class {{resolveName}}{{!!
-}}{{#if parent}}: {{#if attributes.swift.objc}}{{#instanceOf parent.type.actualType "LimeInterface"}}NSObject, {{/instanceOf}}{{/if}}{{!!
-}}{{resolveName parent}}{{/if}}{{#unless parent}}{{#if attributes.swift.objc}}: NSObject{{/if}}{{/unless}} {
+}}{{#if parents}}: {{#if parentClass}}{{resolveName parentClass}}{{#if parentInterfaces}}, {{/if}}{{/if}}{{!!
+}}{{#unless parentClass}}{{#if attributes.swift.objc}}NSObject{{#if parentInterfaces}}, {{/if}}{{/if}}{{/unless}}{{!!
+}}{{#parentInterfaces}}{{resolveName this}}{{#if iter.hasNext}}, {{/if}}{{/parentInterfaces}}{{/if}}{{!!
+}}{{#unless parents}}{{#if attributes.swift.objc}}: NSObject{{/if}}{{/unless}} {
 
 {{#each typeAliases exceptions}}
 {{prefixPartial "swift/SwiftTypeAlias" "    "}}
@@ -40,11 +42,11 @@
 }}{{#if attributes.swift.label}}{{#isNotEq attributes.swift.label "_"}}{{attributes.swift.label}}: {{/isNotEq}}{{/if}}{{!!
 }}{{#unless attributes.swift.label}}{{resolveName}}: {{/unless}}{{!!
 }}{{resolveName}}{{#if iter.hasNext}}, {{/if}}{{/parameters}})
-        {{#ifPredicate class "parentIsClass"}}super.init(c{{resolveName parent.type.actualType}}: _result){{/ifPredicate}}{{!!
-        }}{{#unlessPredicate class "parentIsClass"}}guard _result != 0 else {
+        {{#if class.parentClass}}super.init(c{{resolveName class.parentClass}}: _result){{/if}}{{!!
+        }}{{#unless class.parentClass}}guard _result != 0 else {
             fatalError("Nullptr value is not supported for initializers")
         }
-        c_instance = _result{{/unlessPredicate}}
+        c_instance = _result{{/unless}}
         {{resolveName class "CBridge"}}_cache_swift_object_wrapper(c_instance, Unmanaged<AnyObject>.passUnretained(self).toOpaque())
     }
 

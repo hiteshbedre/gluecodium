@@ -78,10 +78,12 @@ internal class CBridgeImplIncludeResolver(
             }
         ) + resolveParentIncludes(limeContainer)
 
-    private fun resolveParentIncludes(limeContainer: LimeContainerWithInheritance) =
-        ((limeContainer as? LimeInterface)?.parent?.type?.actualType as? LimeInterface)?.let {
-            resolveClassInterfaceIncludes(it)
-        } ?: emptyList()
+    private fun resolveParentIncludes(limeContainer: LimeContainerWithInheritance): List<Include> {
+        if (limeContainer !is LimeInterface) return emptyList()
+        return limeContainer.parents
+            .mapNotNull { it.type.actualType as? LimeInterface }
+            .flatMap { resolveClassInterfaceIncludes(it) }
+    }
 
     private fun resolveStructIncludes(limeStruct: LimeStruct) = resolveContainerIncludes(limeStruct) +
         limeStruct.fields.flatMap { resolveTypeRefIncludes(it.typeRef) } + cppIncludeResolver.optionalInclude
