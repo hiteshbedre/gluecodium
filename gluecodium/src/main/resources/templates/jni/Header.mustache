@@ -37,7 +37,7 @@ extern "C" {
 
 {{/unless}}{{/properties}}
 
-{{#if parent}}{{#instanceOf parent.type.actualType "LimeInterface"}}
+{{#if parentInterfaces}}
 {{#inheritedFunctions}}{{#unless attributes.java.skip}}
 {{>jniFunctionHeader}}
 
@@ -46,7 +46,7 @@ extern "C" {
 {{>jniPropertyHeader}}
 
 {{/unless}}{{/inheritedProperties}}
-{{/instanceOf}}{{/if}}
+{{/if}}
 
 {{#if attributes.equatable attributes.pointerEquatable logic="or"}}
 JNIEXPORT jboolean JNICALL

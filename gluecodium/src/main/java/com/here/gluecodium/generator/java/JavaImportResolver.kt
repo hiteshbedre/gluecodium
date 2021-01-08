@@ -76,7 +76,7 @@ internal class JavaImportResolver(
 
     private fun resolveInterfaceImports(limeInterface: LimeInterface): List<JavaImport> {
         val containerImports = resolveContainerImports(limeInterface)
-        val parentImports = resolveTypeRefImports(limeInterface.parent, ignoreNullability = true)
+        val parentImports = limeInterface.parents.flatMap { resolveTypeRefImports(it, ignoreNullability = true) }
         val implImports = if (limeInterface.path.hasParent) resolveInheritedImports(limeInterface) else emptyList()
 
         return containerImports + parentImports + implImports
@@ -84,10 +84,10 @@ internal class JavaImportResolver(
 
     private fun resolveClassImports(limeClass: LimeClass): List<JavaImport> {
         val containerImports = resolveContainerImports(limeClass)
-        val parentImports = resolveTypeRefImports(limeClass.parent, ignoreNullability = true) +
-            when (limeClass.parent?.type?.actualType) {
-                is LimeClass -> emptyList()
-                else -> resolveInheritedImports(limeClass)
+        val parentImports = limeClass.parents.flatMap { resolveTypeRefImports(it, ignoreNullability = true) } +
+            when (limeClass.parentClass) {
+                null -> resolveInheritedImports(limeClass)
+                else -> emptyList()
             }
 
         return containerImports + parentImports
@@ -148,9 +148,8 @@ internal class JavaImportResolver(
             else -> emptyList()
         }
 
-    private fun resolveTypeRefImports(limeTypeRef: LimeTypeRef?, ignoreNullability: Boolean = false): List<JavaImport> {
-        val limeType = limeTypeRef?.type?.actualType ?: return emptyList()
-
+    private fun resolveTypeRefImports(limeTypeRef: LimeTypeRef, ignoreNullability: Boolean = false): List<JavaImport> {
+        val limeType = limeTypeRef.type.actualType
         val imports = when {
             limeType.external?.java != null -> emptyList()
             limeType is LimeBasicType -> listOfNotNull(resolveBasicTypeImport(limeType.typeId))

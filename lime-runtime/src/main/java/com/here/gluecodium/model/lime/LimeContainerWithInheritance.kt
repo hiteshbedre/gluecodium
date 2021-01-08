@@ -62,10 +62,10 @@ abstract class LimeContainerWithInheritance(
     @Suppress("unused")
     val inheritedFunctions: List<LimeFunction>
         get() = parents.mapNotNull { it.type.actualType as? LimeContainerWithInheritance }
-            .flatMap { it.functions + it.inheritedFunctions }
+            .flatMap { it.functions + it.inheritedFunctions }.distinct()
 
     @Suppress("unused")
     val inheritedProperties: List<LimeProperty>
         get() = parents.mapNotNull { it.type.actualType as? LimeContainerWithInheritance }
-            .flatMap { it.properties + it.inheritedProperties }
+            .flatMap { it.properties + it.inheritedProperties }.distinct()
 }

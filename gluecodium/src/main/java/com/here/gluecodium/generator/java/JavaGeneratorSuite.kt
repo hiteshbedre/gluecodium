@@ -192,10 +192,9 @@ internal class JavaGeneratorSuite(options: Gluecodium.Options) : GeneratorSuite 
 
         val implImports = (imports + importResolver.nativeBaseImport).toMutableList()
         if (limeElement is LimeInterface) {
-            val parentTypeRef = limeElement.parent
-            if (parentTypeRef != null) {
-                val parentImport = importResolver.createTopElementImport(parentTypeRef.type.actualType)
-                implImports -= parentImport
+            val parentInterfaces = limeElement.parentInterfaces
+            for (parentInterface in parentInterfaces) {
+                implImports -= importResolver.createTopElementImport(parentInterface)
                 implImports += (limeElement.inheritedFunctions + limeElement.inheritedProperties)
                     .flatMap { importResolver.resolveImports(it) }
             }

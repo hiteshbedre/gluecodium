@@ -47,7 +47,7 @@ internal object JavaGeneratorPredicates {
             }
         },
         "needsDisposer" to { limeClass: Any ->
-            limeClass is LimeClass && limeClass.parent?.type?.actualType !is LimeClass
+            limeClass is LimeClass && limeClass.parentClass == null
         },
         "needsNonNullAnnotation" to { limeTypeRef ->
             limeTypeRef is LimeTypeRef && !limeTypeRef.isNullable &&
