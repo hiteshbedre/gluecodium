@@ -31,7 +31,6 @@ import com.here.gluecodium.generator.common.NameHelper
 import com.here.gluecodium.generator.common.NameResolver
 import com.here.gluecodium.generator.common.nameRuleSetFromConfig
 import com.here.gluecodium.generator.common.templates.TemplateEngine
-import com.here.gluecodium.generator.cpp.CppGeneratorPredicates.predicates
 import com.here.gluecodium.model.lime.LimeAttributeType
 import com.here.gluecodium.model.lime.LimeAttributeType.EQUATABLE
 import com.here.gluecodium.model.lime.LimeConstant
@@ -110,6 +109,8 @@ internal class CppGeneratorSuite(options: Gluecodium.Options) : GeneratorSuite {
             .map { it.fullName }
             .toSet()
 
+        val diamondInheritedPaths = calculateDiamondInheritedPaths(limeModel.topElements)
+
         val generatedFiles = filteredElements.flatMap {
             generateCode(
                 it,
@@ -117,7 +118,8 @@ internal class CppGeneratorSuite(options: Gluecodium.Options) : GeneratorSuite {
                 Cpp2IncludeResolver(limeModel.referenceMap, nameRules, internalNamespace),
                 nameResolver,
                 CppFullNameResolver(cachingNameResolver),
-                allErrorEnums
+                allErrorEnums,
+                diamondInheritedPaths
             )
         } + COMMON_HEADERS.map { generateHelperFile(it, "include", ".h") } +
             COMMON_IMPLS.map { generateHelperFile(it, "src", ".cpp") } +
@@ -137,7 +139,8 @@ internal class CppGeneratorSuite(options: Gluecodium.Options) : GeneratorSuite {
         includeResolver: Cpp2IncludeResolver,
         nameResolver: Cpp2NameResolver,
         fullNameResolver: CppFullNameResolver,
-        allErrorEnums: Set<String>
+        allErrorEnums: Set<String>,
+        diamondInheritedPaths: Set<String>
     ): List<GeneratedFile> {
 
         val limeElements = when (rootElement) {
@@ -162,10 +165,8 @@ internal class CppGeneratorSuite(options: Gluecodium.Options) : GeneratorSuite {
             return emptyList()
         }
 
-        val typeRegisteredClasses =
-            allTypes.filterIsInstance<LimeContainerWithInheritance>()
-                .filter { it.external?.cpp == null && it.parent == null &&
-                    (it is LimeInterface || it.visibility.isOpen) }
+        val typeRegisteredClasses = allTypes.filterIsInstance<LimeContainerWithInheritance>()
+            .filter { it.external?.cpp == null && it.parents.isEmpty() && (it is LimeInterface || it.visibility.isOpen) }
         val allTypeRefs = collectTypeRefs(allTypes)
         val forwardDeclaredTypes = allTypeRefs.map { it.type }
             .filterIsInstance<LimeContainerWithInheritance>()
@@ -199,15 +200,15 @@ internal class CppGeneratorSuite(options: Gluecodium.Options) : GeneratorSuite {
         )
 
         val nameResolvers = mapOf("" to nameResolver, "FQN" to fullNameResolver, "C++" to nameResolver)
+        val predicates = CppGeneratorPredicates(diamondInheritedPaths).predicates
         val result = mutableListOf<GeneratedFile>()
         if (needsHeader) {
-            result +=
-                generateHeader(rootElement, nameResolvers, fileName, templateData, headerIncludes)
+            result += generateHeader(rootElement, nameResolvers, predicates, fileName, templateData, headerIncludes)
             implementationIncludes += Include.createInternalInclude("$fileName.h")
         }
         if (needsImplementation) {
             result += generateImplementation(
-                rootElement, nameResolvers, allTypes, implementationIncludes, includeResolver,
+                rootElement, nameResolvers, predicates, allTypes, implementationIncludes, includeResolver,
                 errorEnums, templateData, fileName
             )
         }
@@ -223,8 +224,8 @@ internal class CppGeneratorSuite(options: Gluecodium.Options) : GeneratorSuite {
         errorEnums: Set<LimeType>,
         typeRegisteredClasses: List<LimeContainerWithInheritance>
     ): List<Include> {
-        val parentIncludes = (rootElement as? LimeContainerWithInheritance)?.parent
-            ?.let { includeResolver.resolveIncludes(it.type) } ?: emptyList()
+        val parentIncludes = (rootElement as? LimeContainerWithInheritance)?.parents
+            ?.flatMap { includeResolver.resolveIncludes(it.type) } ?: emptyList()
         val additionalIncludes = (parentIncludes + exportInclude).toMutableList()
         if (allTypes.any { it is LimeEnumeration }) {
             additionalIncludes += CppLibraryIncludes.INT_TYPES
@@ -244,6 +245,7 @@ internal class CppGeneratorSuite(options: Gluecodium.Options) : GeneratorSuite {
     private fun generateImplementation(
         rootElement: LimeNamedElement,
         nameResolvers: Map<String, NameResolver>,
+        predicates: Map<String, (Any)-> Boolean>,
         allTypes: List<LimeType>,
         implementationIncludes: MutableList<Include>,
         includeResolver: Cpp2IncludeResolver,
@@ -277,6 +279,7 @@ internal class CppGeneratorSuite(options: Gluecodium.Options) : GeneratorSuite {
     private fun generateHeader(
         rootElement: LimeNamedElement,
         nameResolvers: Map<String, NameResolver>,
+        predicates: Map<String, (Any)-> Boolean>,
         fileName: String,
         generalData: Map<String, Any>,
         headerIncludes: List<Include>
@@ -377,6 +380,23 @@ internal class CppGeneratorSuite(options: Gluecodium.Options) : GeneratorSuite {
                 .groupBy { it.path.head[level] }
                 .map { createForwardDeclarationGroup(it.key, it.value, level + 1, nameResolver) }
         )
+
+    private fun calculateDiamondInheritedPaths(elements: List<LimeNamedElement>) =
+        elements
+            .flatMap { LimeTypeHelper.getAllTypes(it) }
+            .filterIsInstance<LimeContainerWithInheritance>()
+            .distinct()
+            .flatMap { container ->
+                getInheritanceRoots(container).groupingBy { it.fullName }.eachCount().filterValues { it > 1 }.keys
+            }.toSet()
+
+    private fun getInheritanceRoots(limeContainer: LimeContainerWithInheritance): List<LimeContainerWithInheritance> =
+        when {
+            limeContainer.parents.isEmpty() -> listOf(limeContainer)
+            else -> limeContainer.parents
+                .mapNotNull { it.type.actualType as? LimeContainerWithInheritance }
+                .flatMap { getInheritanceRoots(it) }
+        }
 
     companion object {
         const val GENERATOR_NAME = "cpp"

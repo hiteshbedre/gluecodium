@@ -15,7 +15,7 @@
 # SPDX-License-Identifier: Apache-2.0
 # License-Filename: LICENSE
 
-package smoke
+package test
 
 interface ParentInterfaceOne {
     fun parentFunctionOne()
@@ -55,3 +55,11 @@ interface InterfaceWithAllParents: ParentInterfaceOne, ParentInterfaceTwo {
 interface FacetOne: ParentInterfaceOne {}
 interface FacetTwo: ParentInterfaceOne {}
 interface TheDiamond: FacetOne, FacetTwo {}
+
+class MultipleInheritanceFactory {
+    static fun getClassWithMixedParents(): ClassWithMixedParents
+    static fun getClassWithInterfaceParents(): ClassWithInterfaceParents
+    static fun getClassWithAllParents(): ClassWithAllParents
+    static fun getInterfaceWithAllParents(): InterfaceWithAllParents
+    static fun getTheDiamond(): TheDiamond
+}

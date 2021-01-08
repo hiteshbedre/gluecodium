@@ -33,7 +33,7 @@ import com.here.gluecodium.model.lime.LimeTypeRef
 /**
  * List of predicates used by `ifPredicate`/`unlessPredicate` template helpers in C++ generator.
  */
-internal object CppGeneratorPredicates {
+internal class CppGeneratorPredicates(private val diamondInheritedPaths: Set<String>) {
     val predicates = mapOf(
         "needsRefSuffix" to { limeTypeRef: Any ->
             limeTypeRef is LimeTypeRef && Cpp2NameResolver.needsRefSuffix(limeTypeRef)
@@ -83,6 +83,9 @@ internal object CppGeneratorPredicates {
                     actualType.typeId == LimeBasicType.TypeId.STRING &&
                     it.attributes.have(LimeAttributeType.CPP, LimeAttributeValueType.CSTRING)
             }
+        },
+        "isDiamondParent" to { limeContainer: Any ->
+            limeContainer is LimeContainerWithInheritance && diamondInheritedPaths.contains(limeContainer.fullName)
         },
         "needsPointerValueEqual" to fun(limeField: Any): Boolean {
             if (limeField !is LimeField) return false
