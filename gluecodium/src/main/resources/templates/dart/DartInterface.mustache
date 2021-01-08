@@ -19,7 +19,8 @@
   !
   !}}
 {{>dart/DartDocumentation}}{{>dart/DartAttributes}}
-abstract class {{resolveName}} {{#if parent}}implements {{resolveName parent}} {{/if}}{
+abstract class {{resolveName}} {{!!
+}}{{#if parents}}implements {{#parents}}{{resolveName this}}{{#if iter.hasNext}}, {{/if}}{{/parents}} {{/if}}{
 {{#if inheritedFunctions functions inheritedProperties properties logic="or"}}
   {{resolveName}}() {}
 

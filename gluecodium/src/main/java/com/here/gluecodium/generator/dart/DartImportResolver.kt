@@ -55,8 +55,7 @@ internal class DartImportResolver(
                 listOf(collectionSystemImport, collectionPackageImport)
             limeElement is LimeInterface ->
                 listOf(builtInTypesConversionImport, typeRepositoryImport, tokenCacheImport)
-            limeElement is LimeClass &&
-                    (limeElement.parent != null || limeElement.visibility.isOpen) ->
+            limeElement is LimeClass && (limeElement.parents.isNotEmpty() || limeElement.visibility.isOpen) ->
                 listOf(builtInTypesConversionImport, typeRepositoryImport, tokenCacheImport)
             limeElement is LimeClass -> listOf(tokenCacheImport)
             else -> emptyList()

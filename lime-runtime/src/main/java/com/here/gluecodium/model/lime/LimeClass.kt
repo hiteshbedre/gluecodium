@@ -56,8 +56,4 @@ class LimeClass(
 ) {
     val parentClass
         get() = parents.map { it.type.actualType }.firstOrNull { it is LimeClass }
-
-    @Suppress("unused")
-    val hasClassParent
-        get() = parentClass != null
 }

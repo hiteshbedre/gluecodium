@@ -181,8 +181,8 @@ class DartGeneratorSuite(options: Gluecodium.Options) : GeneratorSuite {
         }
         typeRepositoriesCollector += getTypeRepositories(allTypes)
 
-        val parentImports = (rootElement as? LimeContainerWithInheritance)?.parent
-            ?.let { importResolver.resolveImports(it) } ?: emptyList()
+        val parentImports = (rootElement as? LimeContainerWithInheritance)?.parents
+            ?.flatMap { importResolver.resolveImports(it) } ?: emptyList()
         val imports = allTypes.flatMap { importResolver.resolveDeclarationImports(it) } +
             collectReferenceImports(allTypes, importResolver) + parentImports
         val content = TemplateEngine.render(
@@ -203,7 +203,7 @@ class DartGeneratorSuite(options: Gluecodium.Options) : GeneratorSuite {
 
     private fun getTypeRepositories(allTypes: List<LimeType>) =
         allTypes.filterIsInstance<LimeInterface>() +
-        allTypes.filterIsInstance<LimeClass>().filter { it.parent != null || it.visibility.isOpen }
+        allTypes.filterIsInstance<LimeClass>().filter { it.parents.isNotEmpty() || it.visibility.isOpen }
 
     private fun collectReferenceImports(
         allTypes: List<LimeType>,

@@ -53,9 +53,6 @@ abstract class LimeContainerWithInheritance(
     interfaces = interfaces,
     lambdas = lambdas
 ) {
-    val parent
-        get() = parents.firstOrNull()
-
     val parentInterfaces
         get() = parents.map { it.type.actualType }.filterIsInstance<LimeInterface>()
 
