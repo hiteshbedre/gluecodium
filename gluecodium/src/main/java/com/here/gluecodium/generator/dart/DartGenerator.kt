@@ -452,6 +452,7 @@ internal class DartGenerator : Generator {
             "DartDLInit",
             "InstanceCache",
             "IsolateContext",
+            "FinalizerData",
             "LocaleHandle",
             "NullableHandles",
             "ProxyCache",
