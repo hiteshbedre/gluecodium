@@ -22,15 +22,15 @@ final _smoke_SingleNamelessConstructor_release_handle = __lib.catchArgumentError
   >('library_smoke_SingleNamelessConstructor_release_handle'));
 class SingleNamelessConstructor$Impl implements SingleNamelessConstructor {
   @protected
-  Pointer<Void> handle;
+  Pointer<Void> handle = Pointer<Void>.fromAddress(0);
   SingleNamelessConstructor$Impl(this.handle);
   @override
   void release() {
-    if (handle == null) return;
+    if (handle.address == 0) return;
     __lib.uncacheObject(this);
     __lib.ffi_uncache_token(handle, __lib.LibraryContext.isolateId);
     _smoke_SingleNamelessConstructor_release_handle(handle);
-    handle = null;
+    handle = Pointer<Void>.fromAddress(0);
   }
   SingleNamelessConstructor$Impl.create() : handle = _create() {
     __lib.ffi_cache_token(handle, __lib.LibraryContext.isolateId, __lib.cacheObject(this));
@@ -46,8 +46,8 @@ Pointer<Void> smoke_SingleNamelessConstructor_toFfi(SingleNamelessConstructor va
 SingleNamelessConstructor smoke_SingleNamelessConstructor_fromFfi(Pointer<Void> handle) {
   final isolateId = __lib.LibraryContext.isolateId;
   final token = __lib.ffi_get_cached_token(handle, isolateId);
-  final instance = __lib.instanceCache[token] as SingleNamelessConstructor;
-  if (instance != null) return instance;
+  final instance = __lib.instanceCache[token];
+  if (instance is SingleNamelessConstructor) return instance;
   final _copied_handle = _smoke_SingleNamelessConstructor_copy_handle(handle);
   final result = SingleNamelessConstructor$Impl(_copied_handle);
   __lib.ffi_cache_token(_copied_handle, isolateId, __lib.cacheObject(result));
@@ -55,9 +55,9 @@ SingleNamelessConstructor smoke_SingleNamelessConstructor_fromFfi(Pointer<Void> 
 }
 void smoke_SingleNamelessConstructor_releaseFfiHandle(Pointer<Void> handle) =>
   _smoke_SingleNamelessConstructor_release_handle(handle);
-Pointer<Void> smoke_SingleNamelessConstructor_toFfi_nullable(SingleNamelessConstructor value) =>
+Pointer<Void> smoke_SingleNamelessConstructor_toFfi_nullable(SingleNamelessConstructor? value) =>
   value != null ? smoke_SingleNamelessConstructor_toFfi(value) : Pointer<Void>.fromAddress(0);
-SingleNamelessConstructor smoke_SingleNamelessConstructor_fromFfi_nullable(Pointer<Void> handle) =>
+SingleNamelessConstructor? smoke_SingleNamelessConstructor_fromFfi_nullable(Pointer<Void> handle) =>
   handle.address != 0 ? smoke_SingleNamelessConstructor_fromFfi(handle) : null;
 void smoke_SingleNamelessConstructor_releaseFfiHandle_nullable(Pointer<Void> handle) =>
   _smoke_SingleNamelessConstructor_release_handle(handle);
