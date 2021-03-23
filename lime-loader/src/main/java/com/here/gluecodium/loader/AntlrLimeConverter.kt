@@ -144,6 +144,7 @@ internal object AntlrLimeConverter {
             "Equatable" -> LimeAttributeType.EQUATABLE
             "Immutable" -> LimeAttributeType.IMMUTABLE
             "Java" -> LimeAttributeType.JAVA
+            "Optimized" -> LimeAttributeType.OPTIMIZED
             "PointerEquatable" -> LimeAttributeType.POINTER_EQUATABLE
             "Swift" -> LimeAttributeType.SWIFT
             "Serializable" -> LimeAttributeType.SERIALIZABLE

@@ -33,6 +33,7 @@ enum class LimeAttributeType(
     DEPRECATED("Deprecated", LimeAttributeValueType.MESSAGE),
     EQUATABLE("Equatable"),
     IMMUTABLE("Immutable"),
+    OPTIMIZED("Optimized"),
     POINTER_EQUATABLE("PointerEquatable"),
     SERIALIZABLE("Serializable"),
     SKIP("Skip", LimeAttributeValueType.TAG);
