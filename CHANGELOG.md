@@ -1,6 +1,7 @@
 # Gluecodium project Release Notes
 
-## Unreleased
+## 9.0.0-beta2
+Release date: 2021-03-31
 ### Features:
   * Generated Dart code now supports null safety.
 ### Breaking changes:
