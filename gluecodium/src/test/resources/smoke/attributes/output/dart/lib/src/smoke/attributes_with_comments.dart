@@ -108,8 +108,7 @@ class AttributesWithComments$Impl implements AttributesWithComments {
   @override
   void release() {
     if (handle.address == 0) return;
-    __lib.uncacheObject(this);
-    __lib.ffi_uncache_token(handle, __lib.LibraryContext.isolateId);
+    __lib.uncacheInstance(handle);
     _smoke_AttributesWithComments_release_handle(handle);
     handle = Pointer<Void>.fromAddress(0);
   }
@@ -154,13 +153,11 @@ class AttributesWithComments$Impl implements AttributesWithComments {
 Pointer<Void> smoke_AttributesWithComments_toFfi(AttributesWithComments value) =>
   _smoke_AttributesWithComments_copy_handle((value as AttributesWithComments$Impl).handle);
 AttributesWithComments smoke_AttributesWithComments_fromFfi(Pointer<Void> handle) {
-  final isolateId = __lib.LibraryContext.isolateId;
-  final token = __lib.ffi_get_cached_token(handle, isolateId);
-  final instance = __lib.instanceCache[token];
-  if (instance is AttributesWithComments) return instance;
+  final instance = __lib.getCachedInstance(handle);
+  if (instance != null && instance is AttributesWithComments) return instance as AttributesWithComments;
   final _copied_handle = _smoke_AttributesWithComments_copy_handle(handle);
   final result = AttributesWithComments$Impl(_copied_handle);
-  __lib.ffi_cache_token(_copied_handle, isolateId, __lib.cacheObject(result));
+  __lib.cacheInstance(_copied_handle, result);
   return result;
 }
 void smoke_AttributesWithComments_releaseFfiHandle(Pointer<Void> handle) =>
