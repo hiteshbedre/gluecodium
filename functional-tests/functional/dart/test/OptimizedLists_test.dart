@@ -21,7 +21,6 @@
 import "package:test/test.dart";
 import "package:functional/test.dart";
 import "../test_suite.dart";
-import "package:functional/src/_lazy_list.dart";
 
 final _testSuite = TestSuite("Optimized lists");
 
@@ -32,9 +31,6 @@ void main() {
     expect(result.length, 2);
     expect(result[0].field, "foo");
     expect(result[1].field, "bar");
-
-    // TODO: remove
-    (result as LazyList).release();
   });
   _testSuite.test("Optimized list iterator from method", () {
     final result = UseOptimizedList.fetchTheBigOnes();
@@ -45,9 +41,6 @@ void main() {
     expect(iterator.moveNext(), isTrue);
     expect(iterator.current.field, "bar");
     expect(iterator.moveNext(), isFalse);
-
-    // TODO: remove
-    (result as LazyList).release();
   });
   _testSuite.test("Optimized list from property", () {
     final result = UseOptimizedList.lazyOnes;
@@ -57,11 +50,6 @@ void main() {
     expect(element1, isNotNull);
     final element2 = result[0];
     expect(element2, isNotNull);
-
-    // TODO: remove
-    (result as LazyList).release();
-    element1.release();
-    element2.release();
   });
   _testSuite.test("Optimized list iterator from property", () {
     final result = UseOptimizedList.lazyOnes;
@@ -74,11 +62,6 @@ void main() {
     final element2 = iterator.current;
     expect(element2, isNotNull);
     expect(iterator.moveNext(), isFalse);
-
-    // TODO: remove
-    (result as LazyList).release();
-    element1.release();
-    element2.release();
   });
   _testSuite.test("Optimized list from struct", () {
     final result = UseOptimizedList.getStruct();
@@ -86,9 +69,5 @@ void main() {
     expect(result.structs.length, 2);
     expect(result.structs[0].field, "foo");
     expect(result.structs[1].field, "bar");
-
-    // TODO: remove
-    (result.structs as LazyList).release();
-    (result.classes as LazyList).release();
   });
 }

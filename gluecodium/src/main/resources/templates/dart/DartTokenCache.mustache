@@ -54,8 +54,5 @@ int getObjectToken(Object obj) {
 Object? getCachedInstance(Pointer<Void> handle) =>
   _ffi_get_cached_dart_handle(handle, __lib.LibraryContext.isolateId, null);
 
-void cacheInstance(Pointer<Void> handle, Object obj, void Function(Pointer<Void>, int, Object) registerFinalizer) {
-  final isolateId = __lib.LibraryContext.isolateId;
-  _ffi_cache_dart_handle(handle, isolateId, obj);
-  registerFinalizer(handle, isolateId, obj);
-}
+void cacheInstance(Pointer<Void> handle, Object obj) =>
+  _ffi_cache_dart_handle(handle, __lib.LibraryContext.isolateId, obj);

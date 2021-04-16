@@ -27,5 +27,6 @@ __lib.LazyList(
     {{#set call="releaseFfiHandle"}}{{>dart/DartFfiConversionCall}}{{/set}}(__element_handle);
     return __element_result;
   },
-  () => _{{resolveName container "Ffi"}}_{{resolveName elementType "Ffi"}}LazyList_release_handle({{varName}})
+  (obj) => _{{resolveName container "Ffi"}}_{{resolveName elementType "Ffi"}}LazyList_register_finalizer({{!!
+  }}{{varName}}, __lib.LibraryContext.isolateId, obj)
 )
